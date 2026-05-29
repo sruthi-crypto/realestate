@@ -170,6 +170,7 @@ export default function sliceCreator<T extends object | undefined, R>(
         // ✅ Handle ExtendedData object type
         else if (isExtendedData(data) && data.endPoint) {
           finalEndpoint = data.endPoint;
+          delete data.endPoint;
         }
 
         const apiInstance = getApi<T, R>(finalEndpoint);
