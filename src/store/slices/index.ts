@@ -14,6 +14,8 @@ interface ApiOptions<T, R> {
 }
 
 const getApi = <T, R>(endPoint: string): ApiOptions<T, R> => {
+  const url = `${BASE_URL.replace(/\/+$/, "")}/${endPoint.replace(/^\/+/, "")}`;
+
   return {
     get: async () => {
       const token = await localStorage.getItem("token");
@@ -26,7 +28,7 @@ const getApi = <T, R>(endPoint: string): ApiOptions<T, R> => {
       }
 
       const options = {
-        url: `${BASE_URL}${endPoint}`,
+        url,
         method: "get",
         headers: headers,
       };
@@ -49,7 +51,7 @@ const getApi = <T, R>(endPoint: string): ApiOptions<T, R> => {
       }
 
       const options = {
-        url: `${BASE_URL}${endPoint}`,
+        url,
         method: "post",
         data,
         headers: headers,
@@ -71,7 +73,7 @@ const getApi = <T, R>(endPoint: string): ApiOptions<T, R> => {
       }
 
       const options = {
-        url: `${BASE_URL}${endPoint}`,
+        url,
         method: "patch",
         data,
         headers: headers,
@@ -93,7 +95,7 @@ const getApi = <T, R>(endPoint: string): ApiOptions<T, R> => {
       }
 
       const options = {
-        url: `${BASE_URL}${endPoint}`,
+        url,
         method: "put",
         data,
         headers: headers,
@@ -112,7 +114,7 @@ const getApi = <T, R>(endPoint: string): ApiOptions<T, R> => {
       }
 
       const options = {
-        url: `${BASE_URL}${endPoint}`,
+        url,
         method: "delete",
         data,
         headers: headers,
