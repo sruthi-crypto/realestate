@@ -31,9 +31,11 @@ export interface SetupResponse {
   success: boolean;
   message: string;
   data: {
-    qrCode: string;
+    qrCode?: string;
+    otpauth_url?: string;
     secret: string;
-    user: UserData;
+    email?: string;
+    user?: UserData;
   }
 }
 

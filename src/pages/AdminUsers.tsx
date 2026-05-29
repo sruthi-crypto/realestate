@@ -15,6 +15,7 @@ import { UserData } from '@/types/responses';
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { QRCodeSVG } from 'qrcode.react';
 import {
   Plus, Users, ShieldCheck, ShieldOff, Calendar, Mail, User,
   X, ChevronRight, KeyRound, CheckCircle, Copy, Check
@@ -93,7 +94,7 @@ function AddAdminModal({
   step: 1 | 2 | 3;
   form: { username: string; email: string };
   setForm: (f: { username: string; email: string }) => void;
-  qrData: { qrCode: string; secret: string } | null;
+  qrData: { qrCode?: string; otpauth_url?: string; secret: string } | null;
   token: string;
   setToken: (t: string) => void;
   onRegister: () => void;
@@ -104,6 +105,9 @@ function AddAdminModal({
   verifySetupLoading: boolean;
 }) {
   const [copied, setCopied] = useState(false);
+  const qrValue = qrData?.otpauth_url || qrData?.qrCode || "";
+  const qrCodeIsMarkup = qrData?.qrCode?.trim().startsWith("<svg");
+  const qrCodeIsImage = qrData?.qrCode?.startsWith("data:image") || qrData?.qrCode?.startsWith("http");
 
   const copySecret = () => {
     if (qrData?.secret) {
@@ -239,11 +243,16 @@ function AddAdminModal({
               className="mx-auto w-fit p-3 rounded-2xl border"
               style={{ background: "white", borderColor: "hsl(152,55%,32%,0.2)" }}
             >
-              {/* <img src={qrData.qrCode} alt="QR Code" className="w-44 h-44 object-contain" /> */}
-              <div
-                className="w-34 h-34"
-                dangerouslySetInnerHTML={{ __html: qrData.qrCode }}
-              />
+              {qrCodeIsImage ? (
+                <img src={qrData.qrCode} alt="QR Code" className="w-44 h-44 object-contain" />
+              ) : qrCodeIsMarkup ? (
+                <div
+                  className="w-44 h-44 [&>svg]:w-full [&>svg]:h-full"
+                  dangerouslySetInnerHTML={{ __html: qrData.qrCode || "" }}
+                />
+              ) : (
+                <QRCodeSVG value={qrValue} size={176} level="M" includeMargin />
+              )}
             </div>
 
             {/* Secret key */}
@@ -390,7 +399,7 @@ export const AdminUsers = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [form, setForm] = useState({ username: "", email: "" });
-  const [qrData, setQrData] = useState<{ qrCode: string; secret: string } | null>(null);
+  const [qrData, setQrData] = useState<{ qrCode?: string; otpauth_url?: string; secret: string } | null>(null);
   const [token, setToken] = useState("");
 
   useEffect(() => { dispatch(getAllUsersAction()); }, [dispatch]);
@@ -418,7 +427,11 @@ export const AdminUsers = () => {
 
   useEffect(() => {
     if (setupSuccess) {
-      setQrData({ qrCode: setupSuccess.data.qrCode, secret: setupSuccess.data.secret });
+      setQrData({
+        qrCode: setupSuccess.data.qrCode,
+        otpauth_url: setupSuccess.data.otpauth_url,
+        secret: setupSuccess.data.secret,
+      });
       toast.success("Scan QR with Authenticator");
 
       dispatch(clearSetupAction());
@@ -443,6 +456,7 @@ export const AdminUsers = () => {
       toast.success("2FA reset — scan the new QR code to complete setup");
       setQrData({
         qrCode: resetSuccess.data.qrCode,
+        otpauth_url: resetSuccess.data.otpauth_url,
         secret: resetSuccess.data.secret,
       });
       setStep(2);
