@@ -123,6 +123,7 @@ const ProductDetail = () => {
     if (error) toast.error(errorInfo || "Failed to fetch property");
   }, [error, errorInfo]);
 
+
   const media = useMemo(() => property?.images?.filter(Boolean) || [], [property]);
   const activeUrl = media[selectedMedia];
   const videoCount = media.filter(isVideoUrl).length;
