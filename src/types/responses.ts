@@ -65,11 +65,13 @@ export interface PropertyData {
   propertyType: string;
   area: number;
   areaUnit: string;
-  price: string;
+  price: number | string;
   images: string[];
   status: string;
-  updatedAt: string;
-  createdAt: string;
+  updatedAt?: string;
+  createdAt?: string;
+  updatedat?: string;
+  createdat?: string;
 }
 
 export interface CreatePropertyResponse {
@@ -89,7 +91,8 @@ export interface GetAllPropertiesResponse {
 
 export interface GetPropertyByIdResponse {
   success: boolean;
-  data: PropertyData;
+  message?: string;
+  data: PropertyData | PropertyData[];
 }
 
 export interface DeletePropertyResponse {

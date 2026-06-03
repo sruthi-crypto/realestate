@@ -8,6 +8,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import Index from "./pages/Index";
+import ProductDetail from "./pages/ProductDetail";
 import About from "./pages/About";
 import Login from "./pages/Login";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -42,6 +43,7 @@ const App = () => (
                   {/* PUBLIC ROUTES (with footer) */}
                   <Route element={<PublicLayout />}>
                     <Route path="/" element={<Index />} />
+                    <Route path="/properties/:id" element={<ProductDetail />} />
                     <Route path="/about" element={<About />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/privacy-policy" element={<PrivacyPolicy />} />

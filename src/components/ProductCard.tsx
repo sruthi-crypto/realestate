@@ -1,7 +1,7 @@
-import { Product } from "@/data/types";
 import ImageCarousel from "./ImageCarousel";
-import { MapPin, Tag, IndianRupee, Maximize2, CheckCircle, XCircle, Calendar } from "lucide-react";
+import { MapPin, Tag, CheckCircle, XCircle, Calendar } from "lucide-react";
 import { PropertyData } from "@/types/responses";
+import { useNavigate } from "react-router-dom";
 
 function formatPrice(price: number | string) {
   const n = Number(price);
@@ -26,11 +26,28 @@ function formatDate(dateStr: string) {
 
 const ProductCard = ({ product }: { product: PropertyData }) => {
   const isActive = product.status === "active";
+  const navigate = useNavigate();
+
+  const openDetail = () => {
+    navigate(`/properties/${product.id}`);
+  };
 
   return (
-    <div className="rounded-2xl border border-border bg-background shadow-card hover:shadow-elevated hover:border-primary/50 transition-smooth hover-lift overflow-hidden group flex flex-col">
+    <div
+      className="cursor-pointer rounded-lg border border-border bg-background shadow-card hover:shadow-elevated hover:border-primary/50 transition-smooth hover-lift overflow-hidden group flex flex-col focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+      role="button"
+      tabIndex={0}
+      onClick={openDetail}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          openDetail();
+        }
+      }}
+      aria-label={`View details for ${product.title}`}
+    >
       {/* Image */}
-      <div className="relative overflow-hidden" style={{ height: "200px" }}>
+      <div className="relative h-60 overflow-hidden sm:h-52">
         <ImageCarousel images={product.images} />
 
         {/* Status badge */}
