@@ -40,7 +40,7 @@ const ImageCarousel = ({ images }: { images: string[] }) => {
 
   if (!images || images.length === 0) {
     return (
-      <div className="aspect-[4/3] bg-muted rounded-xl flex flex-col items-center justify-center gap-2 text-muted-foreground">
+      <div className="flex h-full w-full flex-col items-center justify-center gap-2 bg-muted text-muted-foreground sm:rounded-xl">
         <Home className="w-8 h-8 opacity-30" />
         <span className="text-xs opacity-50">No media available</span>
       </div>
@@ -52,7 +52,7 @@ const ImageCarousel = ({ images }: { images: string[] }) => {
   const imageCount = images.length - videoCount;
 
   return (
-    <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-muted group">
+    <div className="relative h-full w-full overflow-hidden bg-muted group sm:rounded-xl">
       <MediaSlide url={images[current]} active={true} />
 
       {/* gradient overlay on hover */}
@@ -86,7 +86,7 @@ const ImageCarousel = ({ images }: { images: string[] }) => {
               e.stopPropagation();
               setCurrent((c) => (c - 1 + images.length) % images.length);
             }}
-            className="absolute left-3 top-1/2 -translate-y-1/2 h-9 w-9 rounded-full bg-background/90 backdrop-blur flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 text-foreground hover:text-white hover:-translate-y-1/2 hover:scale-110 shadow-lg"
+            className="absolute left-3 top-1/2 -translate-y-1/2 h-9 w-9 rounded-full bg-background/90 backdrop-blur flex items-center justify-center opacity-100 transition-all duration-300 text-foreground shadow-lg hover:-translate-y-1/2 hover:scale-110 hover:text-white sm:opacity-0 sm:group-hover:opacity-100"
             style={{ zIndex: 5 }}
             onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "hsl(152,55%,32%)"; }}
             onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = ""; }}
@@ -100,7 +100,7 @@ const ImageCarousel = ({ images }: { images: string[] }) => {
               e.stopPropagation();
               setCurrent((c) => (c + 1) % images.length);
             }}
-            className="absolute right-3 top-1/2 -translate-y-1/2 h-9 w-9 rounded-full bg-background/90 backdrop-blur flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 text-foreground hover:text-white hover:-translate-y-1/2 hover:scale-110 shadow-lg"
+            className="absolute right-3 top-1/2 -translate-y-1/2 h-9 w-9 rounded-full bg-background/90 backdrop-blur flex items-center justify-center opacity-100 transition-all duration-300 text-foreground shadow-lg hover:-translate-y-1/2 hover:scale-110 hover:text-white sm:opacity-0 sm:group-hover:opacity-100"
             style={{ zIndex: 5 }}
             onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "hsl(152,55%,32%)"; }}
             onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = ""; }}

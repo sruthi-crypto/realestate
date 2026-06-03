@@ -59,7 +59,7 @@ function normalizePropertyData(data: PropertyData | PropertyData[]): PropertyDat
 function MainMedia({ url, title }: { url?: string; title: string }) {
   if (!url) {
     return (
-      <div className="flex aspect-[4/3] min-h-[320px] items-center justify-center rounded-lg bg-muted text-muted-foreground md:aspect-[16/10]">
+      <div className="flex h-[75vw] min-h-[240px] max-h-[430px] w-full items-center justify-center bg-muted text-muted-foreground sm:rounded-lg md:aspect-[16/10] md:h-auto md:min-h-[320px] md:max-h-none">
         <div className="text-center">
           <Home className="mx-auto mb-3 h-10 w-10 opacity-40" />
           <p className="text-sm font-medium">No media available</p>
@@ -72,7 +72,7 @@ function MainMedia({ url, title }: { url?: string; title: string }) {
     return (
       <video
         src={url}
-        className="aspect-[4/3] min-h-[320px] w-full rounded-lg bg-black object-contain md:aspect-[16/10]"
+        className="h-[75vw] min-h-[240px] max-h-[430px] w-full bg-black object-contain sm:rounded-lg md:aspect-[16/10] md:h-auto md:min-h-[320px] md:max-h-none"
         controls
         playsInline
         preload="metadata"
@@ -84,7 +84,7 @@ function MainMedia({ url, title }: { url?: string; title: string }) {
     <img
       src={url}
       alt={title}
-      className="aspect-[4/3] min-h-[320px] w-full rounded-lg bg-muted object-cover md:aspect-[16/10]"
+      className="h-[75vw] min-h-[240px] max-h-[430px] w-full bg-muted object-cover sm:rounded-lg md:aspect-[16/10] md:h-auto md:min-h-[320px] md:max-h-none"
       onError={(e) => {
         (e.target as HTMLImageElement).src =
           "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='600'%3E%3Crect fill='%23f3f4f6' width='900' height='600'/%3E%3Ctext x='450' y='310' text-anchor='middle' fill='%239ca3af' font-size='22'%3EImage not found%3C/text%3E%3C/svg%3E";
@@ -189,7 +189,9 @@ const ProductDetail = () => {
       <div className="container py-8 md:py-12">
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1.7fr)_minmax(320px,0.8fr)]">
           <div className="space-y-4">
-            <MainMedia url={activeUrl} title={property.title} />
+            <div className="-mx-8 sm:mx-0">
+              <MainMedia url={activeUrl} title={property.title} />
+            </div>
 
             {media.length > 0 && (
               <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5">
@@ -201,9 +203,8 @@ const ProductDetail = () => {
                     <button
                       key={`${url}-${index}`}
                       onClick={() => setSelectedMedia(index)}
-                      className={`group relative aspect-[4/3] overflow-hidden rounded-lg border bg-muted text-left transition-all ${
-                        selected ? "border-primary shadow-lg ring-2 ring-primary/25" : "border-border hover:border-primary/60"
-                      }`}
+                      className={`group relative aspect-[4/3] overflow-hidden rounded-lg border bg-muted text-left transition-all ${selected ? "border-primary shadow-lg ring-2 ring-primary/25" : "border-border hover:border-primary/60"
+                        }`}
                       aria-label={`Show media ${index + 1}`}
                     >
                       {isVideo ? (

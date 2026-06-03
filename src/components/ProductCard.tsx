@@ -34,7 +34,7 @@ const ProductCard = ({ product }: { product: PropertyData }) => {
 
   return (
     <div
-      className="cursor-pointer rounded-lg border border-border bg-background shadow-card hover:shadow-elevated hover:border-primary/50 transition-smooth hover-lift overflow-hidden group flex flex-col focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+      className="cursor-pointer rounded-none border-y border-border bg-background shadow-card transition-smooth hover:border-primary/50 hover:shadow-elevated sm:rounded-lg sm:border hover-lift overflow-hidden group flex flex-col focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
       role="button"
       tabIndex={0}
       onClick={openDetail}
@@ -47,7 +47,7 @@ const ProductCard = ({ product }: { product: PropertyData }) => {
       aria-label={`View details for ${product.title}`}
     >
       {/* Image */}
-      <div className="relative h-60 overflow-hidden sm:h-52">
+      <div className="relative h-[75vw] min-h-[240px] max-h-[430px] overflow-hidden sm:h-52 sm:min-h-0 sm:max-h-none">
         <ImageCarousel images={product.images} />
 
         {/* Status badge */}

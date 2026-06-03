@@ -196,7 +196,7 @@ const Index = () => {
               <p className="text-muted-foreground text-lg font-medium">No properties found in this category.</p>
             </div>
           ) : (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="-mx-8 grid gap-6 sm:mx-0 sm:grid-cols-2 lg:grid-cols-3">
               {filteredproperties.map((product, idx) => (
                 <div
                   key={product.id}
