@@ -11,7 +11,7 @@ import {
 } from "@/store/actions";
 import { toast } from "sonner";
 import { PropertyData } from "@/types/responses";
-import { uploadFilesToSupabase } from "@/supabase";
+import { resolveSupabasePublicUrl, uploadFilesToSupabase } from "@/supabase";
 
 interface Props {
   initialData?: PropertyData | null;
@@ -70,7 +70,10 @@ function isVideoUrl(url: string): boolean {
 
 // Build MediaItem list from raw URLs
 function toMediaItems(urls: string[]): MediaItem[] {
-  return urls.map((url) => ({ url, type: isVideoUrl(url) ? "video" : "image" }));
+  return urls.map((url) => {
+    const mediaUrl = resolveSupabasePublicUrl(url);
+    return { url: mediaUrl, type: isVideoUrl(mediaUrl) ? "video" : "image" };
+  });
 }
 
 const ProductForm = ({ initialData, onCancel }: Props) => {
@@ -159,8 +162,8 @@ const ProductForm = ({ initialData, onCancel }: Props) => {
         propertyType: initialData.propertyType || "",
         area: initialData.area || 0,
         areaUnit: initialData.areaUnit || "",
-        price: initialData.price || "",
-        images: initialData.images || [],
+        price: String(initialData.price || ""),
+        images: (initialData.images || []).map(resolveSupabasePublicUrl),
         status: initialData.status || "active",
       });
       setMediaItems(toMediaItems(initialData.images || []).map((item) => ({ ...item, uploaded: true })));

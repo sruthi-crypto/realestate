@@ -17,6 +17,7 @@ import { GET_PROPERTY_BY_ID } from "@/constants";
 import { getPropertyByIdAction, cleargetPropertyByIdAction } from "@/store/actions";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { PropertyData } from "@/types/responses";
+import { resolveSupabasePublicUrl } from "@/supabase";
 
 function isVideoUrl(url: string): boolean {
   return /\.(mp4|mov|avi|webm|mkv|m4v|ogv)(\?.*)?$/i.test(url);
@@ -50,7 +51,7 @@ function normalizePropertyData(data: PropertyData | PropertyData[]): PropertyDat
 
   return {
     ...property,
-    images: Array.isArray(property.images) ? property.images : [],
+    images: Array.isArray(property.images) ? property.images.map(resolveSupabasePublicUrl) : [],
     createdAt: property.createdAt || property.createdat,
     updatedAt: property.updatedAt || property.updatedat,
   };
@@ -68,10 +69,12 @@ function MainMedia({ url, title }: { url?: string; title: string }) {
     );
   }
 
+  const mediaUrl = resolveSupabasePublicUrl(url);
+
   if (isVideoUrl(url)) {
     return (
       <video
-        src={url}
+        src={mediaUrl}
         className="h-[75vw] min-h-[240px] max-h-[430px] w-full bg-black object-contain sm:rounded-lg md:aspect-[16/10] md:h-auto md:min-h-[320px] md:max-h-none"
         controls
         playsInline
@@ -82,7 +85,7 @@ function MainMedia({ url, title }: { url?: string; title: string }) {
 
   return (
     <img
-      src={url}
+      src={mediaUrl}
       alt={title}
       className="h-[75vw] min-h-[240px] max-h-[430px] w-full bg-muted object-cover sm:rounded-lg md:aspect-[16/10] md:h-auto md:min-h-[320px] md:max-h-none"
       onError={(e) => {
@@ -209,9 +212,9 @@ const ProductDetail = () => {
                       aria-label={`Show media ${index + 1}`}
                     >
                       {isVideo ? (
-                        <video src={url} className="h-full w-full object-cover" muted playsInline preload="metadata" />
+                        <video src={resolveSupabasePublicUrl(url)} className="h-full w-full object-cover" muted playsInline preload="metadata" />
                       ) : (
-                        <img src={url} alt={`${property.title} ${index + 1}`} className="h-full w-full object-cover" />
+                        <img src={resolveSupabasePublicUrl(url)} alt={`${property.title} ${index + 1}`} className="h-full w-full object-cover" />
                       )}
                       <span className="absolute bottom-1.5 left-1.5 rounded-md bg-black/60 px-1.5 py-0.5 text-[10px] font-bold text-white">
                         {index + 1}

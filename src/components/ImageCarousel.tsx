@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, Home, Film } from "lucide-react";
+import { resolveSupabasePublicUrl } from "@/supabase";
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 function isVideoUrl(url: string): boolean {
@@ -8,10 +9,12 @@ function isVideoUrl(url: string): boolean {
 
 // ── MediaSlide: renders one image or video ────────────────────────────────────
 function MediaSlide({ url, active }: { url: string; active: boolean }) {
+  const mediaUrl = resolveSupabasePublicUrl(url);
+
   if (isVideoUrl(url)) {
     return (
       <video
-        src={url}
+        src={mediaUrl}
         className="h-full w-full object-cover"
         muted
         playsInline
@@ -23,7 +26,7 @@ function MediaSlide({ url, active }: { url: string; active: boolean }) {
   }
   return (
     <img
-      src={url}
+      src={mediaUrl}
       alt="Property"
       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
       onError={(e) => {

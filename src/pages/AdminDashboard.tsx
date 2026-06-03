@@ -6,6 +6,7 @@ import { PropertyData } from "@/types/responses";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { DELETE_PROPERTY } from "@/constants";
+import { deleteFilesFromSupabase, resolveSupabasePublicUrl } from "@/supabase";
 
 // ── helpers ───────────────────────────────────────────────────────────────────
 function isVideoUrl(url: string): boolean {
@@ -87,10 +88,12 @@ function DeleteConfirmModal({
 
 // ── Single media slide ────────────────────────────────────────────────────────
 function MediaSlide({ url }: { url: string }) {
+  const mediaUrl = resolveSupabasePublicUrl(url);
+
   if (isVideoUrl(url)) {
     return (
       <video
-        src={url}
+        src={mediaUrl}
         className="w-full h-full object-cover"
         muted
         playsInline
@@ -102,7 +105,7 @@ function MediaSlide({ url }: { url: string }) {
   }
   return (
     <img
-      src={url}
+      src={mediaUrl}
       alt="Property"
       className="w-full h-full object-cover transition-transform duration-500 group-hover/img:scale-105"
       onError={(e) => {
@@ -287,8 +290,9 @@ function PropertyCard({
 // ── Admin Dashboard ───────────────────────────────────────────────────────────
 const AdminDashboard = () => {
   const [properties, setProperties] = useState<PropertyData[]>([]);
-  const [deleteModal, setDeleteModal] = useState<{ open: boolean; id: string; title: string }>({
-    open: false, id: "", title: "",
+  const [storageDeleteLoading, setStorageDeleteLoading] = useState(false);
+  const [deleteModal, setDeleteModal] = useState<{ open: boolean; id: string; title: string; images: string[] }>({
+    open: false, id: "", title: "", images: [],
   });
 
   const dispatch = useAppDispatch();
@@ -311,15 +315,28 @@ const AdminDashboard = () => {
   }, [getPropertiesError, getPropertiesErrorInfo]);
 
   useEffect(() => {
-    if (deletePropertySuccess) { dispatch(clearDeletePropertyAction()); dispatch(getAllPropertiesAction()); setDeleteModal({ open: false, id: "", title: "" }); }
+    if (deletePropertySuccess) { dispatch(clearDeletePropertyAction()); dispatch(getAllPropertiesAction()); setDeleteModal({ open: false, id: "", title: "", images: [] }); }
   }, [deletePropertySuccess, dispatch]);
 
   useEffect(() => {
     if (deletePropertyError) { toast.error(deletePropertyErrorInfo || "Failed to delete property"); setDeleteModal(prev => ({ ...prev, open: false })); }
   }, [deletePropertyError, deletePropertyErrorInfo]);
 
-  const handleDeleteClick = (property: PropertyData) => setDeleteModal({ open: true, id: property.id, title: property.title });
-  const handleDeleteConfirm = () => dispatch(deletePropertyAction({ endPoint: `${DELETE_PROPERTY}${deleteModal.id}` }));
+  const handleDeleteClick = (property: PropertyData) =>
+    setDeleteModal({ open: true, id: property.id, title: property.title, images: property.images || [] });
+
+  const handleDeleteConfirm = async () => {
+    try {
+      setStorageDeleteLoading(true);
+      await deleteFilesFromSupabase(deleteModal.images);
+      dispatch(deletePropertyAction({ endPoint: `${DELETE_PROPERTY}${deleteModal.id}` }));
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to delete property media";
+      toast.error(message);
+    } finally {
+      setStorageDeleteLoading(false);
+    }
+  };
 
   const activeCount = properties.filter(p => p.status === "active").length;
   const totalValue = properties.reduce((sum, p) => sum + Number(p.price), 0);
@@ -330,8 +347,8 @@ const AdminDashboard = () => {
         open={deleteModal.open}
         propertyTitle={deleteModal.title}
         onConfirm={handleDeleteConfirm}
-        onCancel={() => setDeleteModal({ open: false, id: "", title: "" })}
-        loading={deletePropertyLoading}
+        onCancel={() => setDeleteModal({ open: false, id: "", title: "", images: [] })}
+        loading={deletePropertyLoading || storageDeleteLoading}
       />
 
       <div className="container max-w-7xl mx-auto px-4">
