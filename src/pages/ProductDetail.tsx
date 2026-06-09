@@ -23,6 +23,7 @@ function isVideoUrl(url: string): boolean {
   return /\.(mp4|mov|avi|webm|mkv|m4v|ogv)(\?.*)?$/i.test(url);
 }
 
+
 function formatPrice(price: number | string) {
   const n = Number(price);
   if (Number.isNaN(n)) return String(price);
