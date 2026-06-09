@@ -10,4 +10,4 @@ export interface Product {
 export const AREAS = ["Hyderabad", "Vizag", "Bangalore", "Chennai", "Mumbai"] as const;
 export const CATEGORIES = ["Open Plots", "Apartments", "Gated Villas", "Gated Communities"] as const;
 
-export const WHATSAPP_NUMBER = "917032716188";
+export const WHATSAPP_NUMBER = "917671942024";
